@@ -6,9 +6,15 @@ class CalculatorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Calculatrice',
+      title: 'Calculatrice Flutter',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        brightness: Brightness.dark, // Mode sombre
+        primarySwatch: Colors.blue,  // Couleur principale
+        scaffoldBackgroundColor: Colors.black, // Fond noir
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(fontSize: 28, color: Colors.white),
+          bodyMedium: TextStyle(fontSize: 22, color: Colors.white70),
+        ),
       ),
       home: CalculatorScreen(),
     );
@@ -32,12 +38,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   // Méthode pour évaluer l'expression (nous simplifions ici)
   void _calculateResult() {
-    // Pour cet exemple, nous allons utiliser une méthode simple.
-    // Dans un vrai projet, il faudrait sécuriser l'évaluation de l'expression.
     try {
-      // Remplacez le symbole 'x' par '*' si nécessaire, etc.
-      // Ici, nous utilisons la fonction "evaluate" de l'expression.
-      // Note : Pour plus de complexité, on pourrait utiliser une bibliothèque d'évaluation.
       double result = _simpleEvaluate(_display);
       setState(() {
         _display = result.toString();
@@ -108,9 +109,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Calculatrice'),
-      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -129,26 +127,26 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               crossAxisCount: 4,
               padding: EdgeInsets.all(15),
               children: <Widget>[
-                _buildButton('C'), // Effacer
-                _buildButton('( )'), // Parenthèses
-                _buildButton('%'), // Pourcentage
-                _buildButton('/'), // Division
+                _buildButton('C', color: Colors.red), // Effacer
+                _buildButton('( )', color: Colors.blueGrey), // Parenthèses
+                _buildButton('%', color: Colors.blueGrey), // Pourcentage
+                _buildButton('/', color: Colors.orange), // Division
                 _buildButton('7'),
                 _buildButton('8'),
                 _buildButton('9'),
-                _buildButton('x'), // Multiplication
+                _buildButton('x', color: Colors.orange), // Multiplication
                 _buildButton('4'),
                 _buildButton('5'),
                 _buildButton('6'),
-                _buildButton('-'), // Soustraction
+                _buildButton('-', color: Colors.orange), // Soustraction
                 _buildButton('1'),
                 _buildButton('2'),
                 _buildButton('3'),
-                _buildButton('+'), // Addition
+                _buildButton('+', color: Colors.orange), // Addition
                 _buildButton('0'),
                 _buildButton('.'), // Décimale
-                _buildButton("<"), // Supprimer le dernier caractère
-                _buildButton('='), // Calculer le résultat
+                _buildButton("<", color: Colors.red), // Supprimer le dernier caractère
+                _buildButton('=', color: Colors.green), // Calculer le résultat
               ],
             ),
           ),
@@ -158,7 +156,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   }
 
   // Méthode pour construire un bouton de calculatrice
-  Widget _buildButton(String label) {
+  Widget _buildButton(String label, {Color? color}) {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: ElevatedButton(
@@ -172,7 +170,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _calculateResult();
       } else if (label == '<') {
         setState(() {
-          _display = _display.substring(0, _display.length - 1);
+          if (_display != '') {
+            _display = _display.substring(0, _display.length - 1);
+          }
         });
       } else if (label=="( )") {
         var open_parentheses = _display.split("").where((n) => n == "(").toList().length;
@@ -192,9 +192,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             _onButtonPressed(label);
           }
         },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color ?? Colors.grey[800], // Couleur par défaut
+          foregroundColor: Colors.white, // Texte en blanc
+          padding: EdgeInsets.all(20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15), // Coins arrondis
+          ),
+        ),
         child: Text(
           label,
-          style: TextStyle(fontSize: 24),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
     );
